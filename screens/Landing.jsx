@@ -1,44 +1,43 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 
-const Landing = () => {
+
+const Landing = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-
-
-
         <ImageBackground
           source={require("../assets/top.png")}
           style={styles.backgroundImage}
           resizeMode="cover"
-        >
+        ></ImageBackground>
 
-        </ImageBackground>
-
-        <Text style={[styles.heading1]}>
-          Khula Trader
-        </Text>
+        <Text style={[styles.heading1]}>Khula Trader</Text>
 
         <Text style={[styles.heading2]}>
           Sell your products and chat with your buyers.
         </Text>
-
       </View>
 
       <View style={[styles.buttonGroup]}>
-        <TouchableOpacity style={[styles.button, styles.button1]}>
+        <TouchableOpacity style={[styles.button, styles.button1]} onPress={() => navigation.navigate("SignupPage")}>
+
           <Text style={[styles.buttonText1]}>Sign up</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.button2]}>
+
+        <TouchableOpacity style={[styles.button, styles.button2]} onPress={() => navigation.navigate("LoginPage")}>
           <Text style={[styles.buttonText2]}>Log in</Text>
         </TouchableOpacity>
       </View>
 
       <Text style={[styles.teamtext]}>Accept team invite code</Text>
     </View>
-
-
   );
 };
 
@@ -49,9 +48,6 @@ const styles = StyleSheet.create({
 
     justifyContent: "center",
     paddingHorizontal: 20,
-
-
-
   },
 
   heading1: {
@@ -59,7 +55,6 @@ const styles = StyleSheet.create({
     color: "#00A676",
     fontWeight: "bold",
     marginTop: 20,
-
   },
 
   heading2: {
@@ -68,21 +63,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 20,
     marginBottom: 20,
-
   },
 
   backgroundImage: {
     width: 400,
     height: 300,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   imageContainer: {
     marginBottom: 30,
-
-
-
   },
   image: {
     width: 400,
@@ -101,7 +92,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 30,
   },
-
 
   buttonContainer: {
     flexDirection: "row",
@@ -133,46 +123,43 @@ const styles = StyleSheet.create({
     color: "#00A676",
   },
 
-
   buttonGroup: {
-    display: 'flex',
-    flexDirection: 'row',
-    padding: '.5rem',
-    gap: '.5rem',
+    display: "flex",
+    flexDirection: "row",
+    padding: ".5rem",
+    gap: ".5rem",
   },
   button: {
-    padding: '1rem',
+    padding: "1rem",
     flex: 1,
-    textAlign: 'center',
-    borderRadius: '2rem',
+    textAlign: "center",
+    borderRadius: "2rem",
   },
   button1: {
     borderColor: "#3DD58B",
-    borderWidth: '2px',
+    borderWidth: "2px",
   },
   button2: {
-    backgroundColor: '#3dd58b',
+    backgroundColor: "#3dd58b",
   },
   buttonText1: {
-    color: '#3dd58b',
-    textAlign: 'center',
-    fontWeight: 'bold',
+    color: "#3dd58b",
+    textAlign: "center",
+    fontWeight: "bold",
   },
   buttonText2: {
-    color: '#013332',
-    textAlign: 'center',
-    fontWeight: 'bold',
+    color: "#013332",
+    textAlign: "center",
+    fontWeight: "bold",
   },
   teamtext: {
-    textAlign: 'center',
-    color: '#3dd58b',
-    marginTop: '2rem',
-    marginBottom: '2rem',
-    fontSize: '1.2rem',
-    opacity: '0.5',
+    textAlign: "center",
+    color: "#3dd58b",
+    marginTop: "2rem",
+    marginBottom: "2rem",
+    fontSize: "1.2rem",
+    opacity: "0.5",
   },
-
-
 });
 
 export default Landing;
