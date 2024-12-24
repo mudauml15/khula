@@ -1,12 +1,33 @@
-import React, {useState} from 'react'
-import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native'
-import {Ionicons} from '@expo/vector-icons'
-import {useNavigation} from '@react-navigation/native'
+import React, { useState } from 'react'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const LoginPage = () => {
   const navigation = useNavigation()
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false)
+  const [name, setName] = useState('')
+  const [surname, setSurname] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+
+  const handleSaveUserDetails = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match!')
+      return
+    }
+
+    try {
+      // Save user details to AsyncStorage
+      await AsyncStorage.setItem('userDetails', JSON.stringify({ name, surname, password }))
+      Alert.alert('Success', 'User details saved successfully!')
+      navigation.navigate('ProfilePage') // Navigate to the next page
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save user details.')
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -18,13 +39,25 @@ const LoginPage = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <TextInput placeholder='Name' style={styles.input} />
-        <TextInput placeholder='Surname' style={styles.input} />
+        <TextInput
+          placeholder='Name'
+          style={styles.input}
+          value={name}
+          onChangeText={setName}
+        />
+        <TextInput
+          placeholder='Surname'
+          style={styles.input}
+          value={surname}
+          onChangeText={setSurname}
+        />
         <View style={styles.passwordContainer}>
           <TextInput
             placeholder='Password'
             style={styles.input}
             secureTextEntry={!passwordVisible}
+            value={password}
+            onChangeText={setPassword}
           />
           <TouchableOpacity
             onPress={() => setPasswordVisible(!passwordVisible)}
@@ -42,6 +75,8 @@ const LoginPage = () => {
             placeholder='Confirm password'
             style={styles.input}
             secureTextEntry={!confirmPasswordVisible}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
           />
           <TouchableOpacity
             onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
@@ -58,9 +93,9 @@ const LoginPage = () => {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('UploadPage')}
+        onPress={handleSaveUserDetails}
       >
-        <Text style={styles.buttonText}>Continue </Text>
+        <Text style={styles.buttonText}> Continue </Text>
       </TouchableOpacity>
     </View>
   )
@@ -97,7 +132,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 15,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
