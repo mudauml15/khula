@@ -20,10 +20,10 @@ const LoginPage = () => {
     }
 
     try {
-      // Save user details to AsyncStorage
+
       await AsyncStorage.setItem('userDetails', JSON.stringify({ name, surname, password }))
       Alert.alert('Success', 'User details saved successfully!')
-      navigation.navigate('ProfilePage') // Navigate to the next page
+      navigation.navigate('ProfilePage')
     } catch (error) {
       Alert.alert('Error', 'Failed to save user details.')
     }

@@ -47,7 +47,7 @@ const ProfilePage = () => {
 
       <TouchableOpacity
         style={styles.updateButton}
-        onPress={() => navigation.navigate('UploadPage')} // Navigate to UploadPage
+        onPress={() => navigation.navigate('UploadPage')} 
       >
         <Text style={styles.updateButtonText}>Upload Documents</Text>
       </TouchableOpacity>
