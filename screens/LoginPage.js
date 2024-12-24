@@ -1,18 +1,12 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import React, {useState} from 'react'
+import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native'
+import {Ionicons} from '@expo/vector-icons'
+import {useNavigation} from '@react-navigation/native'
 
 const LoginPage = () => {
-  const navigation = useNavigation();
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const navigation = useNavigation()
+  const [passwordVisible, setPasswordVisible] = useState(false)
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false)
 
   return (
     <View style={styles.container}>
@@ -24,11 +18,11 @@ const LoginPage = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <TextInput placeholder="Name" style={styles.input} />
-        <TextInput placeholder="Surname" style={styles.input} />
+        <TextInput placeholder='Name' style={styles.input} />
+        <TextInput placeholder='Surname' style={styles.input} />
         <View style={styles.passwordContainer}>
           <TextInput
-            placeholder="Password"
+            placeholder='Password'
             style={styles.input}
             secureTextEntry={!passwordVisible}
           />
@@ -37,15 +31,15 @@ const LoginPage = () => {
             style={styles.icon}
           >
             <Ionicons
-              name={passwordVisible ? "eye" : "eye-off"}
+              name={passwordVisible ? 'eye' : 'eye-off'}
               size={20}
-              color="gray"
+              color='gray'
             />
           </TouchableOpacity>
         </View>
         <View style={styles.passwordContainer}>
           <TextInput
-            placeholder="Confirm password"
+            placeholder='Confirm password'
             style={styles.input}
             secureTextEntry={!confirmPasswordVisible}
           />
@@ -54,32 +48,30 @@ const LoginPage = () => {
             style={styles.icon}
           >
             <Ionicons
-              name={confirmPasswordVisible ? "eye" : "eye-off"}
+              name={confirmPasswordVisible ? 'eye' : 'eye-off'}
               size={20}
-              color="gray"
+              color='gray'
             />
           </TouchableOpacity>
         </View>
       </View>
 
-      <TouchableOpacity style={styles.button}>
-        <Text
-          style={styles.buttonText}
-          onPress={() => navigation.navigate("UploadPage")}
-        >
-          Continue{" "}
-        </Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('UploadPage')}
+      >
+        <Text style={styles.buttonText}>Continue </Text>
       </TouchableOpacity>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: '#F5F5F5',
     paddingHorizontal: 20,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   header: {
     marginBottom: 30,
@@ -87,51 +79,50 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     paddingBottom: 20,
-    fontWeight: "bold",
-    color: "#002B4C",
+    fontWeight: 'bold',
+    color: '#002B4C',
   },
   subtitle: {
     fontSize: 16,
-    color: "gray",
+    color: 'gray',
     marginTop: 5,
   },
   inputContainer: {
     marginBottom: 20,
   },
   input: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 8,
     padding: 15,
     fontSize: 16,
     marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
-    color: "green",
-    
+    color: 'green',
   },
   passwordContainer: {
-    position: "relative",
+    position: 'relative',
   },
   icon: {
-    position: "absolute",
+    position: 'absolute',
     right: 15,
     top: 15,
   },
   button: {
-    backgroundColor: "#013334",
+    backgroundColor: '#013334',
     borderRadius: 25,
     paddingVertical: 15,
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 20,
   },
   buttonText: {
-    color: "#35c080",
+    color: '#35c080',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
-});
+})
 
-export default LoginPage;
+export default LoginPage
