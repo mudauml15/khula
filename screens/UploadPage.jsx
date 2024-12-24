@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,13 +6,192 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
-  Button,
+  Alert,
+  Image,
+  Linking,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UploadPage = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedSection, setSelectedSection] = useState("");
+  const [uploadedFiles, setUploadedFiles] = useState({});
+
+  useEffect(() => {
+    loadSavedFiles();
+    requestPermissions();
+  }, []);
+
+  const requestPermissions = async () => {
+    try {
+      const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+      const libraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (cameraPermission.status !== 'granted' || libraryPermission.status !== 'granted') {
+        Alert.alert(
+          'Permission Required',
+          'Camera and media library access is required to take and choose photos.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      console.error('Error requesting permissions:', error);
+    }
+  };
+
+  const loadSavedFiles = async () => {
+    try {
+      const savedFiles = await AsyncStorage.getItem('uploadedFiles');
+      if (savedFiles !== null) {
+        setUploadedFiles(JSON.parse(savedFiles));
+      }
+    } catch (error) {
+      console.error('Error loading files:', error);
+      Alert.alert('Error', 'Failed to load saved files');
+    }
+  };
+
+  const saveFileData = async (section, fileData) => {
+    try {
+      const updatedFiles = {
+        ...uploadedFiles,
+        [section]: {
+          ...fileData,
+          timestamp: new Date().toISOString(),
+        }
+      };
+      
+      await AsyncStorage.setItem('uploadedFiles', JSON.stringify(updatedFiles));
+      setUploadedFiles(updatedFiles);
+      Alert.alert('Success', 'File uploaded successfully');
+    } catch (error) {
+      console.error('Error saving file:', error);
+      Alert.alert('Error', 'Failed to save file');
+    }
+  };
+
+  const handleTakePhoto = async () => {
+    try {
+      const { status } = await ImagePicker.getCameraPermissionsAsync();
+      
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permission Required',
+          'Please grant camera permission to take photos.',
+          [
+            {
+              text: 'Open Settings',
+              onPress: () => Linking.openSettings(),
+            },
+            { text: 'Cancel' }
+          ]
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['image'],
+        quality: 0.8,
+        allowsEditing: true,
+        base64: true,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        const asset = result.assets[0];
+        await saveFileData(selectedSection, {
+          uri: asset.uri,
+          type: 'image',
+          base64: asset.base64,
+          width: asset.width,
+          height: asset.height,
+        });
+        setModalVisible(false);
+      }
+    } catch (error) {
+      console.error('Camera error:', error);
+      Alert.alert('Error', 'Failed to take photo: ' + error.message);
+    }
+  };
+
+  const handleChooseFromGallery = async () => {
+    try {
+      const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+      
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permission Required',
+          'Please grant media library access to choose photos.',
+          [
+            {
+              text: 'Open Settings',
+              onPress: () => Linking.openSettings(),
+            },
+            { text: 'Cancel' }
+          ]
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['image'],
+        quality: 0.8,
+        allowsEditing: true,
+        base64: true,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        const asset = result.assets[0];
+        await saveFileData(selectedSection, {
+          uri: asset.uri,
+          type: 'image',
+          base64: asset.base64,
+          width: asset.width,
+          height: asset.height,
+        });
+        setModalVisible(false);
+      }
+    } catch (error) {
+      console.error('Gallery error:', error);
+      Alert.alert('Error', 'Failed to pick image from gallery: ' + error.message);
+    }
+  };
+
+  const handleUploadFile = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['application/pdf', 'image/jpeg', 'image/png'],
+        copyToCacheDirectory: true,
+      });
+
+      if (result.type === 'success') {
+        await saveFileData(selectedSection, {
+          uri: result.uri,
+          type: result.mimeType,
+          name: result.name,
+          size: result.size,
+        });
+        setModalVisible(false);
+      }
+    } catch (error) {
+      console.error('Document picker error:', error);
+      Alert.alert('Error', 'Failed to upload file: ' + error.message);
+    }
+  };
+
+  const handleDeleteFile = async (section) => {
+    try {
+      const updatedFiles = { ...uploadedFiles };
+      delete updatedFiles[section];
+      await AsyncStorage.setItem('uploadedFiles', JSON.stringify(updatedFiles));
+      setUploadedFiles(updatedFiles);
+      Alert.alert('Success', 'File deleted successfully');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete file');
+    }
+  };
 
   const sections = [
     {
@@ -29,9 +208,32 @@ const UploadPage = () => {
     },
   ];
 
-  const handleUploadClick = (sectionTitle) => {
-    setSelectedSection(sectionTitle);
-    setModalVisible(true);
+  const renderUploadedFile = (section) => {
+    const file = uploadedFiles[section.title];
+    if (!file) return null;
+
+    return (
+      <View style={styles.uploadedFileContainer}>
+        <View style={styles.filePreview}>
+          {file.type.includes('image') ? (
+            <Image source={{ uri: file.uri }} style={styles.uploadedImage} />
+          ) : (
+            <Ionicons name="document" size={24} color="#00A676" />
+          )}
+          <View style={styles.fileInfo}>
+            <Text style={styles.uploadedFileName}>
+              Uploaded: {new Date(file.timestamp).toLocaleDateString()}
+            </Text>
+            <TouchableOpacity 
+              onPress={() => handleDeleteFile(section.title)}
+              style={styles.deleteButton}
+            >
+              <Ionicons name="trash-outline" size={20} color="#ff4444" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
   };
 
   return (
@@ -47,12 +249,22 @@ const UploadPage = () => {
           <View key={index} style={styles.card}>
             <Text style={styles.cardTitle}>{section.title}</Text>
             <Text style={styles.cardDescription}>{section.description}</Text>
+            {renderUploadedFile(section)}
             <TouchableOpacity
               style={styles.uploadButton}
-              onPress={() => handleUploadClick(section.title)}
+              onPress={() => {
+                setSelectedSection(section.title);
+                setModalVisible(true);
+              }}
             >
-              <Ionicons name="add" size={20} color="#00A676" />
-              <Text style={styles.uploadText}>Tap here to upload</Text>
+              <Ionicons 
+                name={uploadedFiles[section.title] ? "refresh" : "add"} 
+                size={20} 
+                color="#00A676" 
+              />
+              <Text style={styles.uploadText}>
+                {uploadedFiles[section.title] ? 'Replace file' : 'Tap here to upload'}
+              </Text>
             </TouchableOpacity>
             <Text style={styles.supportText}>
               Supported: JPG, PDF, PNG. Maximum file size: 10MB
@@ -79,21 +291,21 @@ const UploadPage = () => {
               Choose an option to upload your file.
             </Text>
 
-            <TouchableOpacity style={styles.modalButton}>
+            <TouchableOpacity style={styles.modalButton} onPress={handleTakePhoto}>
               <View style={styles.iconContainer}>
                 <Ionicons name="camera" size={24} color="#00a676df" />
               </View>
               <Text style={styles.modalButtonText}>Take a Photo</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.modalButton}>
+            <TouchableOpacity style={styles.modalButton} onPress={handleChooseFromGallery}>
               <View style={styles.iconContainer}>
                 <Ionicons name="image" size={24} color="#00a676df" />
               </View>
               <Text style={styles.modalButtonText}>Choose from Gallery</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.modalButton}>
+            <TouchableOpacity style={styles.modalButton} onPress={handleUploadFile}>
               <View style={styles.iconContainer}>
                 <Ionicons name="cloud-upload" size={24} color="#00a676df" />
               </View>
@@ -164,6 +376,33 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "gray",
   },
+  uploadedFileContainer: {
+    marginBottom: 15,
+  },
+  filePreview: {
+    backgroundColor: "#F8F9FA",
+    borderRadius: 8,
+    padding: 10,
+  },
+  uploadedImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 4,
+    marginRight: 10,
+  },
+  fileInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  uploadedFileName: {
+    fontSize: 14,
+    color: "#002B4C",
+  },
+  deleteButton: {
+    padding: 5,
+  },
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
@@ -174,12 +413,10 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    alignItems: "flex-start",
   },
   modalHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "100%",
     alignItems: "center",
     marginBottom: 20,
   },
@@ -192,31 +429,27 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "gray",
     marginBottom: 20,
-    textAlign: "center",
   },
   modalButton: {
-    backgroundColor: "white",
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    alignItems: "flex-start",
-    marginBottom: 10,
-    width: "100%",
     flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+    backgroundColor: "white",
     borderColor: "#d6d1ce",
     borderWidth: 1,
   },
   modalButtonText: {
-    paddingTop: 10,
-    color: "#003E59",
     fontSize: 16,
-    fontWeight: "normal",
-    marginLeft: 8,
+    color: "#003E59",
+    marginLeft: 15,
   },
   iconContainer: {
     backgroundColor: "#bff4d8",
-    borderRadius: 10,
+    borderRadius: 8,
     padding: 8,
   },
 });
+
 export default UploadPage;
