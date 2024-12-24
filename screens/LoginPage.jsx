@@ -7,20 +7,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 const LoginPage = () => {
   const navigation = useNavigation()
   const [passwordVisible, setPasswordVisible] = useState(false)
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false)
   const [name, setName] = useState('')
   const [surname, setSurname] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
 
   const handleSaveUserDetails = async () => {
-    if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match!')
-      return
-    }
-
     try {
-
       await AsyncStorage.setItem('userDetails', JSON.stringify({ name, surname, password }))
       Alert.alert('Success', 'User details saved successfully!')
       navigation.navigate('ProfilePage')
@@ -32,7 +24,7 @@ const LoginPage = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Complete your profile</Text>
+        <Text style={styles.title}>Log in to your profile</Text>
         <Text style={styles.subtitle}>
           Almost there! Please add a few more details to complete your profile.
         </Text>
@@ -65,25 +57,6 @@ const LoginPage = () => {
           >
             <Ionicons
               name={passwordVisible ? 'eye' : 'eye-off'}
-              size={20}
-              color='gray'
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.passwordContainer}>
-          <TextInput
-            placeholder='Confirm password'
-            style={styles.input}
-            secureTextEntry={!confirmPasswordVisible}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-          />
-          <TouchableOpacity
-            onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
-            style={styles.icon}
-          >
-            <Ionicons
-              name={confirmPasswordVisible ? 'eye' : 'eye-off'}
               size={20}
               color='gray'
             />
