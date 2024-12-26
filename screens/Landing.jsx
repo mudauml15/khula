@@ -82,13 +82,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#FFFFFF", // White title text for better contrast
+    color: "#FFFFFF",
     textAlign: "center",
     marginVertical: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: "#B0D5D1", // Subtitle with softer color for readability
+    color: "#B0D5D1", 
     textAlign: "center",
     marginBottom: 30,
   },
