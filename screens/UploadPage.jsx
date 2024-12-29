@@ -63,7 +63,7 @@ const UploadPage = () => {
           timestamp: new Date().toISOString(),
         }
       };
-      
+
       await AsyncStorage.setItem('uploadedFiles', JSON.stringify(updatedFiles));
       setUploadedFiles(updatedFiles);
       Alert.alert('Success', 'File uploaded successfully');
@@ -76,7 +76,7 @@ const UploadPage = () => {
   const handleTakePhoto = async () => {
     try {
       const { status } = await ImagePicker.getCameraPermissionsAsync();
-      
+
       if (status !== 'granted') {
         Alert.alert(
           'Permission Required',
@@ -93,11 +93,12 @@ const UploadPage = () => {
       }
 
       const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ['image'],
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 0.8,
         allowsEditing: true,
         base64: true,
       });
+
 
       if (!result.canceled && result.assets[0]) {
         const asset = result.assets[0];
@@ -119,7 +120,7 @@ const UploadPage = () => {
   const handleChooseFromGallery = async () => {
     try {
       const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
-      
+
       if (status !== 'granted') {
         Alert.alert(
           'Permission Required',
@@ -136,7 +137,7 @@ const UploadPage = () => {
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['image'],
+        mediaTypes: ImagePicker.MediaTypeOptions.Images, 
         quality: 0.8,
         allowsEditing: true,
         base64: true,
@@ -224,7 +225,7 @@ const UploadPage = () => {
             <Text style={styles.uploadedFileName}>
               Uploaded: {new Date(file.timestamp).toLocaleDateString()}
             </Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => handleDeleteFile(section.title)}
               style={styles.deleteButton}
             >
@@ -257,10 +258,10 @@ const UploadPage = () => {
                 setModalVisible(true);
               }}
             >
-              <Ionicons 
-                name={uploadedFiles[section.title] ? "refresh" : "add"} 
-                size={20} 
-                color="#00A676" 
+              <Ionicons
+                name={uploadedFiles[section.title] ? "refresh" : "add"}
+                size={20}
+                color="#00A676"
               />
               <Text style={styles.uploadText}>
                 {uploadedFiles[section.title] ? 'Replace file' : 'Tap here to upload'}
