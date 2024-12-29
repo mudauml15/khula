@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: "#B0D5D1", 
+    color: "#B0D5D1",
     textAlign: "center",
     marginBottom: 30,
   },
@@ -126,18 +126,18 @@ const styles = StyleSheet.create({
   buttonGroup: {
     display: "flex",
     flexDirection: "row",
-    padding: ".5rem",
-    gap: ".5rem",
+    padding: 8,
+    gap: 8,
   },
   button: {
-    padding: "1rem",
+    padding: 16,
     flex: 1,
     textAlign: "center",
-    borderRadius: "2rem",
+    borderRadius: 30,
   },
   button1: {
     borderColor: "#3DD58B",
-    borderWidth: "2px",
+    borderWidth: 2,
   },
   button2: {
     backgroundColor: "#3dd58b",
@@ -155,10 +155,10 @@ const styles = StyleSheet.create({
   teamtext: {
     textAlign: "center",
     color: "#3dd58b",
-    marginTop: "2rem",
-    marginBottom: "2rem",
-    fontSize: "1.2rem",
-    opacity: "0.5",
+    marginTop: 32,
+    marginBottom: 32,
+    fontSize: 19.2,
+    opacity: 0.5,
   },
 });
 
