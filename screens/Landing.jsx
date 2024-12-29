@@ -1,4 +1,5 @@
 import React from "react";
+import { theme } from "../theme";
 import {
   View,
   Text,
@@ -44,7 +45,7 @@ const Landing = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#013332",
+    backgroundColor: theme.colors.green300,
 
     justifyContent: "center",
     paddingHorizontal: 20,
@@ -52,14 +53,14 @@ const styles = StyleSheet.create({
 
   heading1: {
     fontSize: 24,
-    color: "#00A676",
+    color: theme.colors.green200,
     fontWeight: "bold",
     marginTop: 20,
   },
 
   heading2: {
     fontSize: 34,
-    color: "#ffffff",
+    color: theme.colors.white,
     fontWeight: "bold",
     marginTop: 20,
     marginBottom: 20,
@@ -82,16 +83,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: theme.colors.white,
     textAlign: "center",
     marginVertical: 10,
   },
-  subtitle: {
-    fontSize: 16,
-    color: "#B0D5D1",
-    textAlign: "center",
-    marginBottom: 30,
-  },
+
 
   buttonContainer: {
     flexDirection: "row",
@@ -101,7 +97,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   button: {
-    backgroundColor: "#00A676",
+    backgroundColor: theme.colors.green200,
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -110,17 +106,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: theme.colors.white,
     fontSize: 16,
     fontWeight: "bold",
   },
   secondaryButton: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: theme.colors.white,
     borderWidth: 2,
-    borderColor: "#00A676",
+    borderColor:theme.colors.green200,
   },
   secondaryButtonText: {
-    color: "#00A676",
+    color:theme.colors.green200,
   },
 
   buttonGroup: {
@@ -136,25 +132,25 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   button1: {
-    borderColor: "#3DD58B",
+    borderColor: theme.colors.green200,
     borderWidth: 2,
   },
   button2: {
-    backgroundColor: "#3dd58b",
+    backgroundColor: theme.colors.green200,
   },
   buttonText1: {
-    color: "#3dd58b",
+    color: theme.colors.green200,
     textAlign: "center",
     fontWeight: "bold",
   },
   buttonText2: {
-    color: "#013332",
+    color: theme.colors.green300,
     textAlign: "center",
     fontWeight: "bold",
   },
   teamtext: {
     textAlign: "center",
-    color: "#3dd58b",
+    color: theme.colors.green200,
     marginTop: 32,
     marginBottom: 32,
     fontSize: 19.2,
